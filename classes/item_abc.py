@@ -2,7 +2,7 @@ from abc import ABC, abstractmethod
 
 class Item(ABC):
 
-    # TODO: add more attributes
+    # TODO: add more attributes if needed
     def __init__(self, name: str, price: float, quantity: int, description: str | None = None):
         self._id = None
         self.name = name
@@ -65,7 +65,6 @@ class Item(ABC):
             raise ValueError("Quantity cannot be negative.")
 
         self._quantity = quantity
-
 
     # description validation
     @property

@@ -18,8 +18,14 @@ class ItemRepository:
 
             item.id = c.lastrowid
 
-    def del_from_db(self, item: InventoryItem):
-        pass
+    def del_from_db(self, id: int):
+        query = """
+                DELETE FROM inventory WHERE id = ?;
+                """
+
+        with sqlite3.connect(self._db) as conn:
+            c = conn.cursor()
+            c.execute(query, (id,))
 
     def edit_item(self, id):
         pass

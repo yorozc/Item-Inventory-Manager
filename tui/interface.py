@@ -16,6 +16,8 @@ def run_tui():
         print(spacer)
         print("3. Display specific item via ID")
         print(spacer)
+        print("4. Delete item")
+        print(spacer)
         # TODO: other operations
         # TODO: use rich to make tui look nice
         user_inp = input("What operation would you like to perform: ")
@@ -42,6 +44,8 @@ def run_tui():
 
                         break
 
+                    print("Item added!")
+
             case "2": # get all from db
                 inv_data = item_repo.get_all_items()
                 for item in inv_data:
@@ -64,7 +68,9 @@ def run_tui():
                 print(f"Description: {data[4]}")
                 print(spacer)
 
-            case "4":
-                pass
+            case "4": # delete using id
+                id = int(input("Enter id of item to delete: "))
+                item_repo.del_from_db(id)
+                print("Item deleted")
 
         
