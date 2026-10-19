@@ -1,27 +1,32 @@
 from db.item_repo import ItemRepository
 from classes.inventory_item import InventoryItem
-from rich import print
+from rich.console import Console
 
+console = Console()
 item_repo = ItemRepository()
-spacer = "-" * 50
+spacer = "-" * 20
+TEXT_COLOR = "#fdfcdc"
+HEADER_COLOR = "#f07167"
 
-print("Welcome to Item MGR")
+console.print("[#023e7d bold italic]Welcome to Item MGR")
+console.print(spacer)
 
 def run_tui():
     while True:
-        print("Select an operation: ")
-        print("1. Add new item")
-        print(spacer)
-        print("2. Display all items")
-        print(spacer)
-        print("3. Display specific item via ID")
-        print(spacer)
-        print("4. Delete item")
-        print(spacer)
+        console.print(f"[{HEADER_COLOR} bold]Select an operation: ")
+
+        console.print(f"[{TEXT_COLOR}]1. Add new item")
+        console.print(spacer)
+        console.print(f"[{TEXT_COLOR}]2. Display all items")
+        console.print(spacer)
+        console.print(f"[{TEXT_COLOR}]3. Display specific item via ID")
+        console.print(spacer)
+        console.print(f"[{TEXT_COLOR}]4. Delete item")
+        console.print(spacer)
         # TODO: other operations
         # TODO: use rich to make tui look nice
         user_inp = input("What operation would you like to perform: ")
-        print(spacer)
+        console.print(spacer)
 
         match user_inp:
             case "1": # add to db
@@ -48,6 +53,10 @@ def run_tui():
 
             case "2": # get all from db
                 inv_data = item_repo.get_all_items()
+                if len(inv_data) == 0:
+                    print("Database is empty")
+                    print(spacer)
+                    break
                 for item in inv_data:
                     print(spacer)
                     print(f"ID: {item[0]}")
