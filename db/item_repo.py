@@ -2,13 +2,11 @@ from classes.inventory_item import InventoryItem
 from db.db_conn import create_table
 import sqlite3
 
-# TODO: add error checking for del, and check items
-
 class ItemRepository:
     def __init__(self):
-        # creates inventory table if it doesn't exist
-        create_table()
+        create_table() # creates inventory table if it doesn't exist
         self._db = "inventory.db"
+        self._table = "" # preparing for inventory profile feature
 
     def add_item(self, item: InventoryItem) -> None:
         query = """
@@ -20,7 +18,6 @@ class ItemRepository:
 
             item.id = c.lastrowid
         
-
     def del_from_db(self, id: int):
         query = """
                 DELETE FROM inventory WHERE id = ?;
@@ -32,8 +29,16 @@ class ItemRepository:
             c = conn.cursor()
             c.execute(query, (id,))
 
-    def edit_item(self, id):
-        pass
+    def edit_item(self, column, value, id):
+        query = f"""
+                UPDATE inventory
+                SET {column} = ?
+                WHERE id = ?;
+                """
+
+        with sqlite3.connect(self._db) as conn:
+            c = conn.cursor()
+            c.execute(query, (value, id))
 
     def get_item(self, id: int):
         query = """
