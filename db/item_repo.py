@@ -2,6 +2,8 @@ from classes.inventory_item import InventoryItem
 from db.db_conn import create_table
 import sqlite3
 
+# TODO: add error checking for del, and check items
+
 class ItemRepository:
     def __init__(self):
         # creates inventory table if it doesn't exist
@@ -17,6 +19,7 @@ class ItemRepository:
             c.execute(query, (item.name, item.price, item.quantity, item.description)) 
 
             item.id = c.lastrowid
+        
 
     def del_from_db(self, id: int):
         query = """
@@ -31,6 +34,7 @@ class ItemRepository:
         pass
 
     def get_item(self, id: int):
+
         query = """
                 SELECT * FROM inventory WHERE id = ?;
                 """
@@ -39,7 +43,12 @@ class ItemRepository:
             c.execute(query, (id,))
 
             data = c.fetchone()
-        return data
+
+        if data != None:
+            return data
+
+        
+
 
     def get_all_items(self) -> list:
         query = """
