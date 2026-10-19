@@ -15,7 +15,7 @@ console.print(spacer)
 def run_tui():
     while True:
         console.print(f"[{HEADER_COLOR} bold]Select an operation: ")
-        
+
         console.print(f"[{TEXT_COLOR}]1. Display all items")
         console.print(spacer)
         console.print(f"[{TEXT_COLOR}]2. Display specific item")
@@ -40,14 +40,7 @@ def run_tui():
                     print("Database is empty")
                     print(spacer)
                     break
-                for item in inv_data:
-                    print(spacer)
-                    print(f"ID: {item[0]}")
-                    print(f"Name: {item[1]}")
-                    print(f"Price: ${item[2]:.2f}")
-                    print(f"Quantity: {item[3]}")
-                    print(f"Description: {item[4]}")
-                    print(spacer)
+                print_items(inv_data)
 
             case "2": # get all from db
                 id = int(input("Please enter id of item: "))
@@ -55,12 +48,7 @@ def run_tui():
                 data = item_repo.get_item(id)
                
                 if data:
-                    print(f"ID: {data[0]}")
-                    print(f"Name: {data[1]}")
-                    print(f"Price: ${data[2]:.2f}")
-                    print(f"Quantity: {data[3]}")
-                    print(f"Description: {data[4]}")
-                    print(spacer)
+                    print_items(data)
                 else:
                     print("Item not found!")
                     print(spacer)
@@ -79,14 +67,7 @@ def run_tui():
                         item_repo.add_item(new_item)
                     
                         inv_data = item_repo.get_all_items()
-                        for item in inv_data:
-                            print(spacer)
-                            print(f"ID: {item[0]}")
-                            print(f"Name: {item[1]}")
-                            print(f"Price: ${item[2]:.2f}")
-                            print(f"Quantity: {item[3]}")
-                            print(f"Description: {item[4]}")
-                            print(spacer)
+                        print_items(inv_data)
                         break
                     
                 print("Item added!")
