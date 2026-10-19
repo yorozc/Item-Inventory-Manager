@@ -25,7 +25,9 @@ class ItemRepository:
         query = """
                 DELETE FROM inventory WHERE id = ?;
                 """
-
+        if self.get_item(id) == None:
+            return None
+        
         with sqlite3.connect(self._db) as conn:
             c = conn.cursor()
             c.execute(query, (id,))
@@ -34,7 +36,6 @@ class ItemRepository:
         pass
 
     def get_item(self, id: int):
-
         query = """
                 SELECT * FROM inventory WHERE id = ?;
                 """
@@ -46,9 +47,6 @@ class ItemRepository:
 
         if data != None:
             return data
-
-        
-
 
     def get_all_items(self) -> list:
         query = """

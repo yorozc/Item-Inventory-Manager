@@ -68,25 +68,27 @@ def run_tui():
 
             case "3": # get using id
                 id = int(input("Please enter id of item: "))
+                print(spacer)
                 data = item_repo.get_item(id)
 
-                if data != None:
-                    print(spacer)
+                if data:
                     print(f"ID: {data[0]}")
                     print(f"Name: {data[1]}")
                     print(f"Price: ${data[2]:.2f}")
                     print(f"Quantity: {data[3]}")
                     print(f"Description: {data[4]}")
                     print(spacer)
-
-                print(spacer)
-                print("ID cannot be empty")
-                print(spacer)
-
+                else:
+                    print("Item not found!")
+                    print(spacer)
 
             case "4": # delete using id
                 id = int(input("Enter id of item to delete: "))
-                item_repo.del_from_db(id)
-                print("Item deleted")
+                print(spacer)
+                if item_repo.del_from_db(id):
+                    print("Item deleted")
+                else:
+                    print("Item not found!")
+                    print(spacer)
 
         
