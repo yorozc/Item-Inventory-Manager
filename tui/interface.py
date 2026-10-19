@@ -26,12 +26,13 @@ def run_tui():
         console.print(spacer)
         console.print(f"[{TEXT_COLOR}]5. Edit item")
         console.print(spacer)
+        console.print(f"[{TEXT_COLOR}]6. Quit")
         # TODO: other operations
-        user_inp = input("What operation would you like to perform: ")
+        user_inp = console.input(f"[{HEADER_COLOR} bold]What operation would you like to perform: ")
         console.print(spacer)
 
         match user_inp:
-            case "1": # add to db
+            case "1": # get all items
                 # TODO: implement "more" linux command func to show 
                 # 10 items and then let the user press space to show more 
                 # or q to exit
@@ -40,9 +41,10 @@ def run_tui():
                     print("Database is empty")
                     print(spacer)
                     break
-                print_items(inv_data)
 
-            case "2": # get all from db
+                print_items(item_repo.get_all_items())
+
+            case "2": # get specific from db
                 id = int(input("Please enter id of item: "))
                 print(spacer)
                 data = item_repo.get_item(id)
@@ -53,7 +55,7 @@ def run_tui():
                     print("Item not found!")
                     print(spacer)
 
-            case "3": # get using id
+            case "3": # add to db
                 while True:
                     name = input("Name of item: ")
                     price = input("Price of item: ")
@@ -62,15 +64,22 @@ def run_tui():
                     confirmation = input(f"Is the information entered correctly (y/n) : {name}, {price}, {quantity}, {description} ")
                     
                     if confirmation.lower() == "y" or confirmation.lower() == "yes":
-                    
-                        new_item = InventoryItem(name, price, quantity, description)
-                        item_repo.add_item(new_item)
-                    
-                        inv_data = item_repo.get_all_items()
-                        print_items(inv_data)
+                        try:
+                            new_item = InventoryItem(name, price, quantity, description)
+                            item_repo.add_item(new_item)
+                            print(spacer)
+                            console.print("[green bold]Item added!")
+                            print(spacer)
+                        except ValueError as e:
+                            print(spacer)
+                            console.print("[red bold]" + str(e))
+                            print(spacer)
+                        except Exception as e:
+                            print(spacer)
+                            print(e)
+                            print(spacer)
+
                         break
-                    
-                print("Item added!")
 
             case "4": # delete using id
                 id = int(input("Enter id of item to delete: "))
@@ -82,7 +91,6 @@ def run_tui():
                     print(spacer)
 
             case "5": # edit item
-                print_items(item_repo.get_all_items())
                 id = int(input("Enter id of item to edit: "))
                 print(spacer)
                 
@@ -95,6 +103,10 @@ def run_tui():
                     pass
 
                 print(f"{column.capitalize()} edited!")
+
+            case "6":
+                exit(0)
+            
 
 
 

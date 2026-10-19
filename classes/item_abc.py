@@ -41,20 +41,14 @@ class Item(ABC):
 
     @price.setter
     def price(self, price):
-        if isinstance(price, int):
+        try:
             price = float(price)
 
-        if isinstance(price, str):
-            # check if str fits a regex
-            pattern = re.compile(r"[0-9]*\.[0-9]+", re.IGNORECASE)
-            matched_ptrn = pattern.match(price)
-            price = float(matched_ptrn.group(0))
-
-        if not isinstance(price, float):
-            raise TypeError("Price must be a float.")
+        except (TypeError, ValueError):
+            raise ValueError("ERROR: Price must be a number.")
 
         if price < 0 :
-            raise ValueError("Price cannot be negative.")
+            raise ValueError("ERROR: Price cannot be negative.")
 
         self._price = price
 
@@ -65,16 +59,14 @@ class Item(ABC):
 
     @quantity.setter
     def quantity(self, quantity):
-        if isinstance(quantity, str):
-            pattern = re.compile(r"[0-9]+", re.IGNORECASE)
-            matched_ptrn = pattern.match(quantity)
-            quantity = int(matched_ptrn.group(0))
+        try:
+            quantity = int(quantity)
+
+        except (TypeError, ValueError):
+            raise ValueError("Quantity must be a number.")
 
         if quantity < 0:
             raise ValueError("Quantity cannot be negative.")
-
-        if not isinstance(quantity, int):
-            raise TypeError("Quantity must be an int.")
 
         self._quantity = quantity
 
