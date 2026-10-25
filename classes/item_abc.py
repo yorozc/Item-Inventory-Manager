@@ -1,5 +1,6 @@
 from abc import ABC, abstractmethod
 import re
+from decimal import Decimal, ROUND_HALF_UP
 
 class Item(ABC):
 
@@ -42,7 +43,8 @@ class Item(ABC):
     @price.setter
     def price(self, price):
         try:
-            price = float(price)
+            raw_price = Decimal(price)
+            price = float(raw_price.quantize(Decimal("0.01"), rounding=ROUND_HALF_UP))
 
         except (TypeError, ValueError):
             raise ValueError("ERROR: Price must be a number.")
