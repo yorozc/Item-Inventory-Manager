@@ -80,28 +80,29 @@ def run_tui():
             case "4": # delete using id
                 id = int(input("Enter id of item to delete: "))
                 print(spacer)
-                if item_repo.del_from_db(id):
+
+                try:
+                    item_repo.del_from_db(id)
                     print("Item deleted")
-                else:
-                    print("Item not found!")
-                    print(spacer)
+                except Exception as e:
+                    print(e)
 
             case "5": # edit item
-                id = int(input("Enter id of item to edit: "))
-                print(spacer)
+                try:
+                    id = int(input("Enter id of item to edit: "))
+                    print(spacer)
 
-                if item_repo.get_item(id) != None:
-                    column = input("Enter the property that you want to edit: ")
-                    print(f"Editing {column}")
-                    value = input("Enter new value: ")
-                    try:
+                    if not item_repo.get_item(id):
+                        print(f"Error: Item with ID {id} does not exist.")
+
+                    else: 
+                        column = input("Enter the property that you want to edit: ")
+                        value = input("Enter new value: ")
                         item_repo.edit_item(column, value, id)
-                    except Exception as e:
-                        print(e)
-                    
-                    print(f"{column.capitalize()} edited!") 
+                        print(f"{column.capitalize()} edited!") 
 
-                print(f"Item with id {id} not found!")
+                except Exception as e:
+                    print(e)
                 
             case "6":
                 exit(0)

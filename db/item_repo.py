@@ -7,6 +7,7 @@ class ItemRepository:
         create_table() # creates inventory table if it doesn't exist
         self._db = "inventory.db"
         self._table = "" # preparing for inventory profile feature
+        self._columns = ["name", "price", "quantity", "description"]
 
     def add_item(self, item: InventoryItem) -> None:
         query = """
@@ -23,14 +24,18 @@ class ItemRepository:
         query = """
                 DELETE FROM inventory WHERE id = ?;
                 """
-        if self.get_item(id) == None:
-            return None
         
         with sqlite3.connect(self._db) as conn:
             c = conn.cursor()
-            c.execute(query, (id,))
+            cursor = c.execute(query, (id,))
+            if cursor.rowcount == 0:
+                raise Exception(f"Item with id {id} does not exist.")
 
     def edit_item(self, column, value, id):
+
+        if column not in self._columns:
+            raise Exception(f"Invalid property: {column}. Allowed: {', '.join(self._columns)}")
+        
         query = f"""
                 UPDATE inventory
                 SET {column} = ?
