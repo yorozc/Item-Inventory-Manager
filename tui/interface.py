@@ -56,6 +56,7 @@ def run_tui():
                     print(spacer)
 
             case "3": # add to db
+                # TODO: allow user to quit while adding items (just get out of add operation)
                 while True:
                     name = input("Name of item: ")
                     price = input("Price of item: ")
@@ -70,15 +71,10 @@ def run_tui():
                             print(spacer)
                             console.print("[green bold]Item added!")
                             print(spacer)
-                        except ValueError as e:
-                            print(spacer)
-                            console.print("[red bold]" + str(e))
-                            print(spacer)
                         except Exception as e:
                             print(spacer)
                             print(e)
                             print(spacer)
-
                         break
 
             case "4": # delete using id
@@ -93,17 +89,20 @@ def run_tui():
             case "5": # edit item
                 id = int(input("Enter id of item to edit: "))
                 print(spacer)
+
+                if item_repo.get_item(id) != None:
+                    column = input("Enter the property that you want to edit: ")
+                    print(f"Editing {column}")
+                    value = input("Enter new value: ")
+                    try:
+                        item_repo.edit_item(column, value, id)
+                    except Exception as e:
+                        print(e)
+                    
+                    print(f"{column.capitalize()} edited!") 
+
+                print(f"Item with id {id} not found!")
                 
-                column = input("Enter the property that you want to edit: ")
-                print(f"Editing {column}")
-                value = input("Enter new value: ")
-                try:
-                    item_repo.edit_item(column, value, id)
-                except:
-                    pass
-
-                print(f"{column.capitalize()} edited!")
-
             case "6":
                 exit(0)
             

@@ -17,6 +17,7 @@ class ItemRepository:
             c.execute(query, (item.name, item.price, item.quantity, item.description)) 
 
             item.id = c.lastrowid
+
         
     def del_from_db(self, id: int):
         query = """
@@ -35,7 +36,7 @@ class ItemRepository:
                 SET {column} = ?
                 WHERE id = ?;
                 """
-
+        
         with sqlite3.connect(self._db) as conn:
             c = conn.cursor()
             c.execute(query, (value, id))
