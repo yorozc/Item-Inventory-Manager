@@ -40,7 +40,7 @@ def run_tui():
                 if len(inv_data) == 0:
                     print("Database is empty")
                     print(spacer)
-                    break
+                    
 
                 print_items(item_repo.get_all_items())
 
@@ -59,14 +59,16 @@ def run_tui():
                 # TODO: allow user to quit while adding items (just get out of add operation)
                 while True:
                     name = input("Name of item: ")
-                    price = input("Price of item: ")
+                    category = input("Category of item: ")
+                    cost_price = input("Cost of item: ")
+                    retail_price = input("Retail cost of item: ")
                     quantity = input("Quantity: ")
                     description = input("Description (optional): ")
-                    confirmation = input(f"Is the information entered correctly (y/n) : {name}, {price}, {quantity}, {description} ")
+                    confirmation = input(f"Is the information entered correctly [{name}, {category}, {cost_price}, {retail_price}, {quantity}, {description}]: (y/n)")
                     
                     if confirmation.lower() == "y" or confirmation.lower() == "yes":
                         try:
-                            new_item = InventoryItem(name, price, quantity, description)
+                            new_item = InventoryItem(name, category, cost_price, retail_price, quantity, description)
                             item_repo.add_item(new_item)
                             print(spacer)
                             console.print("[green bold]Item added!")

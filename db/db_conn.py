@@ -12,15 +12,13 @@ def create_table():
     category TEXT,
     cost_price REAL NOT NULL,
     retail_price REAL NOT NULL,
-    price REAL NOT NULL,
     quantity INTEGER NOT NULL DEFAULT 0,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    description TEXT
+    description TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     );
     """)
 
     # create table for logging 
-
 
     conn.commit()
 

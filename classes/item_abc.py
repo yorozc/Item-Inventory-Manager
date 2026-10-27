@@ -39,9 +39,10 @@ class Item(ABC):
     def category(self):
         return self._category
 
+    # TODO: COMPLETE LATER
     @category.setter
     def category(self, category):
-        pass
+        self._category = category
 
     # cost price validation
     @property

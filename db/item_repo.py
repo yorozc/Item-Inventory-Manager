@@ -13,11 +13,11 @@ class ItemRepository:
 
     def add_item(self, item: InventoryItem) -> None:
         query = """
-                INSERT INTO inventory (name, price, quantity, description) VALUES (?, ?, ?, ?)
+                INSERT INTO inventory (name, category, cost_price, retail_price, quantity, description) VALUES (?, ?, ?, ?, ?, ?)
                 """
-        with sqlite3.connect(self._db) as conn: # commits and closes 
+        with sqlite3.connect(self._db) as conn:
             c = conn.cursor()
-            c.execute(query, (item.name, item.price, item.quantity, item.description)) 
+            c.execute(query, (item.name, item.category, item.cost_price, item.retail_price, item.quantity, item.description)) 
 
             item.id = c.lastrowid
 
