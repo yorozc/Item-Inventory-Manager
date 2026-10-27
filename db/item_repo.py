@@ -7,7 +7,9 @@ class ItemRepository:
         create_table() # creates inventory table if it doesn't exist
         self._db = "inventory.db"
         self._table = "" # preparing for inventory profile feature
-        self._columns = ["name", "price", "quantity", "description"]
+        self._columns = ["name", "category", "cost_price", "retail_price", "quantity", "description"]
+
+        # TODO: CHANGE QUERIES TO FIT NEW COLUMNS
 
     def add_item(self, item: InventoryItem) -> None:
         query = """

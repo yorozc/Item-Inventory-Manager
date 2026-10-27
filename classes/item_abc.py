@@ -1,14 +1,14 @@
 from abc import ABC, abstractmethod
-import re
 from decimal import Decimal, ROUND_HALF_UP
 
 class Item(ABC):
 
-    # TODO: add more attributes if needed
-    def __init__(self, name: str, price: float, quantity: int, description: str | None = None):
+    def __init__(self, name: str, category: str, cost_price: float, retail_price: float, quantity: int, description: str | None = None):
         self._id = None
         self.name = name
-        self.price = price
+        self.category = category
+        self.cost_price = cost_price
+        self.retail_price = retail_price
         self.quantity = quantity
         self.description = description
 
@@ -35,13 +35,21 @@ class Item(ABC):
 
         self._name = name.strip()
 
-    # price validation
     @property
-    def price(self):
-        return self._price
+    def category(self):
+        return self._category
 
-    @price.setter
-    def price(self, price):
+    @category.setter
+    def category(self, category):
+        pass
+
+    # cost price validation
+    @property
+    def cost_price(self):
+        return self._cost_price
+
+    @cost_price.setter
+    def cost_price(self, price):
         try:
             raw_price = Decimal(price)
             price = float(raw_price.quantize(Decimal("0.01"), rounding=ROUND_HALF_UP))
@@ -52,7 +60,26 @@ class Item(ABC):
         if price < 0 :
             raise ValueError("ERROR: Price cannot be negative.")
 
-        self._price = price
+        self._cost_price = price
+
+    # retail price validation
+    @property
+    def retail_price(self):
+        return self._retail_price
+
+    @retail_price.setter
+    def retail_price(self, price):
+        try:
+            raw_price = Decimal(price)
+            price = float(raw_price.quantize(Decimal("0.01"), rounding=ROUND_HALF_UP))
+
+        except (TypeError, ValueError):
+            raise ValueError("ERROR: Price must be a number.")
+
+        if price < 0 :
+            raise ValueError("ERROR: Price cannot be negative.")
+
+        self._retail_price = price
 
     # quantity validation
     @property
