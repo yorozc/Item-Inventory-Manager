@@ -5,6 +5,7 @@ from helper.print_items import print_items
 
 console = Console()
 item_repo = ItemRepository()
+profile = item_repo.profile
 spacer = "-" * 20
 TEXT_COLOR = "#fdfcdc"
 HEADER_COLOR = "#f07167"
@@ -15,6 +16,7 @@ console.print(spacer)
 def run_tui():
     while True:
         console.print(f"[{HEADER_COLOR} bold]Select an operation: ")
+        print(f"Currently in profile: {item_repo.profile}")
 
         console.print(f"[{TEXT_COLOR}]1. Display all items")
         console.print(spacer)
@@ -26,7 +28,13 @@ def run_tui():
         console.print(spacer)
         console.print(f"[{TEXT_COLOR}]5. Edit item")
         console.print(spacer)
-        console.print(f"[{TEXT_COLOR}]6. Quit")
+        console.print(f"[{TEXT_COLOR}]6. Create New Profile")
+        console.print(spacer)
+        console.print(f"[{TEXT_COLOR}]7. Change Profile")
+        console.print(spacer)
+        console.print(f"[{TEXT_COLOR}]8. Show All Profiles")
+        console.print(spacer)
+        console.print(f"[{TEXT_COLOR}]9. Quit")
         # TODO: other operations
         user_inp = console.input(f"[{HEADER_COLOR} bold]What operation would you like to perform: ")
         console.print(spacer)
@@ -105,8 +113,27 @@ def run_tui():
 
                 except Exception as e:
                     print(e)
-                
+
             case "6":
+                try:
+                    new_profile = input("Enter new profile name: ")
+                    item_repo.create_profile(new_profile)
+                    item_repo.switch_profile(new_profile)
+                    
+                except Exception as e:
+                    print(e)
+
+                print(f"New profile created: {new_profile}")
+
+
+            case "7":
+                profile = input("Input Profile: ")
+                item_repo.switch_profile(profile)
+
+            case "8":
+                print(item_repo.show_all_profiles())
+
+            case "9":
                 exit(0)
             
 

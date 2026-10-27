@@ -5,15 +5,16 @@ import sqlite3
 class ItemRepository:
     def __init__(self):
         create_table() # creates inventory table if it doesn't exist
-        self._db = "inventory.db"
-        self._table = "" # preparing for inventory profile feature
+        self._db = "inventory.db" 
         self._columns = ["name", "category", "cost_price", "retail_price", "quantity", "description"]
+        self._profiles = self.show_all_profiles() # tables that exist within db (profiles)
+        self.profile = "inventory" 
 
-        # TODO: CHANGE QUERIES TO FIT NEW COLUMNS
+    # ITEM RELATED FUNCTIONS
 
     def add_item(self, item: InventoryItem) -> None:
-        query = """
-                INSERT INTO inventory (name, category, cost_price, retail_price, quantity, description) VALUES (?, ?, ?, ?, ?, ?)
+        query = f"""
+                INSERT INTO {self.profile} (name, category, cost_price, retail_price, quantity, description) VALUES (?, ?, ?, ?, ?, ?)
                 """
         with sqlite3.connect(self._db) as conn:
             c = conn.cursor()
@@ -23,8 +24,8 @@ class ItemRepository:
 
         
     def del_from_db(self, id: int):
-        query = """
-                DELETE FROM inventory WHERE id = ?;
+        query = f"""
+                DELETE FROM {self.profile} WHERE id = ?;
                 """
         
         with sqlite3.connect(self._db) as conn:
@@ -39,7 +40,7 @@ class ItemRepository:
             raise Exception(f"Invalid property: {column}. Allowed: {', '.join(self._columns)}")
         
         query = f"""
-                UPDATE inventory
+                UPDATE {self.profile}
                 SET {column} = ?
                 WHERE id = ?;
                 """
@@ -49,8 +50,8 @@ class ItemRepository:
             c.execute(query, (value, id))
 
     def get_item(self, id: int):
-        query = """
-                SELECT * FROM inventory WHERE id = ?;
+        query = f"""
+                SELECT * FROM {self.profile} WHERE id = ?;
                 """
         with sqlite3.connect(self._db) as conn:
             c = conn.cursor()
@@ -62,8 +63,8 @@ class ItemRepository:
             return data
 
     def get_all_items(self) -> list:
-        query = """
-                SELECT * FROM inventory;
+        query = f"""
+                SELECT * FROM {self.profile};
                 """
         with sqlite3.connect(self._db) as conn:
             c = conn.cursor()
@@ -72,3 +73,55 @@ class ItemRepository:
             inv_data = c.fetchall()
 
         return inv_data
+
+    # PROFILE RELATED FUNCTIONS
+
+    @property
+    def profile(self):
+        return self._profile
+
+    @profile.setter
+    def profile(self, profile):
+        if profile not in self._profiles:
+            raise Exception
+        
+        self._profile = profile
+
+    def create_profile(self, profile):
+        with sqlite3.connect(self._db) as conn:
+            c = conn.cursor() 
+
+            # create profile and switch 
+
+            c.execute(f""" CREATE TABLE IF NOT EXISTS {profile}(
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            name TEXT NOT NULL,
+            category TEXT,
+            cost_price REAL NOT NULL,
+            retail_price REAL NOT NULL,
+            quantity INTEGER NOT NULL DEFAULT 0,
+            description TEXT,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            );
+            """)
+
+            c.execute("SELECT name FROM sqlite_master WHERE type='table';")
+        
+            self._profiles = [row[0] for row in c.fetchall()]
+
+    def switch_profile(self, profile_name):
+        self._profiles = self.show_all_profiles()
+
+        if profile_name not in self._profiles:
+            raise ValueError
+
+        self.profile = profile_name
+        print(f"Switched to profile: {self.profile}")
+
+    def show_all_profiles(self):
+        with sqlite3.connect(self._db) as conn:
+            c = conn.cursor() 
+            c.execute("SELECT name FROM sqlite_master WHERE type='table';")
+            tables = [row[0] for row in c.fetchall()]
+        
+        return tables
