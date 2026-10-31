@@ -19,6 +19,10 @@ def create_table():
     """)
 
     # create table for logging 
+    c.execute("""
+    
+    
+    """)
 
     conn.commit()
 

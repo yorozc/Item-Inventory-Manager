@@ -113,10 +113,13 @@ class ItemRepository:
         self._profiles = self.show_all_profiles()
 
         if profile_name not in self._profiles:
-            raise ValueError
+            raise ValueError("Profile does not exist.")
 
         self.profile = profile_name
         print(f"Switched to profile: {self.profile}")
+
+    def delete_profile(self, profile_name):
+        pass
 
     def show_all_profiles(self):
         with sqlite3.connect(self._db) as conn:

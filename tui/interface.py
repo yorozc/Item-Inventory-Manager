@@ -127,8 +127,11 @@ def run_tui():
 
 
             case "7":
-                profile = input("Input Profile: ")
-                item_repo.switch_profile(profile)
+                try:
+                    profile = input("Input Profile: ")
+                    item_repo.switch_profile(profile)
+                except Exception as e:
+                    print(e)
 
             case "8":
                 print(item_repo.show_all_profiles())
