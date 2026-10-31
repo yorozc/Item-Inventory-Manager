@@ -1,13 +1,13 @@
-from db.item_repo import ItemRepository
-from db.profile_repo import ProfileRepository
+from db.db_repo import DBRepository
+
 from classes.inventory_item import InventoryItem
 from rich.console import Console
 from helper.print_items import print_items
 
 console = Console()
-item_repo = ItemRepository()
-profile_repo = ProfileRepository()
-profile = profile_repo.profile
+db_repo = DBRepository()
+
+profile = db_repo.profile
 spacer = "-" * 20
 TEXT_COLOR = "#fdfcdc"
 HEADER_COLOR = "#f07167"
@@ -18,7 +18,7 @@ console.print(spacer)
 def run_tui():
     while True:
         console.print(f"[{HEADER_COLOR} bold]Select an operation: ")
-        print(f"Currently in profile: {profile_repo.profile}")
+        print(f"Currently in profile: {db_repo.profile}")
 
         console.print(f"[{TEXT_COLOR}]1. Display all items")
         console.print(spacer)
@@ -48,18 +48,18 @@ def run_tui():
                 # TODO: implement "more" linux command func to show 
                 # 10 items and then let the user press space to show more 
                 # or q to exit
-                inv_data = item_repo.get_all_items()
+                inv_data = db_repo.get_all_items()
                 if len(inv_data) == 0:
                     print("Database is empty")
                     print(spacer)
                     
 
-                print_items(item_repo.get_all_items())
+                print_items(db_repo.get_all_items())
 
             case "2": # get specific from db
                 id = int(input("Please enter id of item: "))
                 print(spacer)
-                data = item_repo.get_item(id)
+                data = db_repo.get_item(id)
                
                 if data:
                     print_items(data)
@@ -96,7 +96,7 @@ def run_tui():
                 print(spacer)
 
                 try:
-                    item_repo.del_from_db(id)
+                    db_repo.del_from_db(id)
                     print("Item deleted")
                 except Exception as e:
                     print(e)
@@ -106,13 +106,13 @@ def run_tui():
                     id = int(input("Enter id of item to edit: "))
                     print(spacer)
 
-                    if not item_repo.get_item(id):
+                    if not db_repo.get_item(id):
                         print(f"Error: Item with ID {id} does not exist.")
 
                     else: 
                         column = input("Enter the property that you want to edit: ")
                         value = input("Enter new value: ")
-                        item_repo.edit_item(column, value, id)
+                        db_repo.edit_item(column, value, id)
                         print(f"{column.capitalize()} edited!") 
 
                 except Exception as e:
@@ -121,8 +121,8 @@ def run_tui():
             case "6": # create profile
                 try:
                     new_profile = input("Enter new profile name: ")
-                    profile_repo.create_profile(new_profile)
-                    profile_repo.switch_profile(new_profile)
+                    db_repo.create_profile(new_profile)
+                    db_repo.switch_profile(new_profile)
                     
                 except Exception as e:
                     print(e)
@@ -132,17 +132,17 @@ def run_tui():
             case "7": # switch profile
                 try:
                     profile = input("Input Profile: ")
-                    profile_repo.switch_profile(profile)
+                    db_repo.switch_profile(profile)
                 except Exception as e:
                     print(e)
 
             case "8": # print profiles
-                print(profile_repo.show_all_profiles())
+                print(db_repo.show_all_profiles())
 
             case "9": # delete profile
                 try:
                     profile_name = input("Enter profile name: ")
-                    profile_repo.delete_profile(profile_name)
+                    db_repo.delete_profile(profile_name)
                     print(f"Profile {profile_name} deleted.")
                 except Exception as e:
                     print(e)
