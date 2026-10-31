@@ -34,7 +34,9 @@ def run_tui():
         console.print(spacer)
         console.print(f"[{TEXT_COLOR}]8. Show All Profiles")
         console.print(spacer)
-        console.print(f"[{TEXT_COLOR}]9. Quit")
+        console.print(f"[{TEXT_COLOR}]9. Delete Profile")
+        console.print(spacer)
+        console.print(f"[{TEXT_COLOR}]10. Quit")
         # TODO: other operations
         user_inp = console.input(f"[{HEADER_COLOR} bold]What operation would you like to perform: ")
         console.print(spacer)
@@ -137,6 +139,14 @@ def run_tui():
                 print(item_repo.show_all_profiles())
 
             case "9":
+                try:
+                    profile_name = input("Enter profile name: ")
+                    item_repo.delete_profile(profile_name)
+                    print(f"Profile {profile_name} deleted.")
+                except Exception as e:
+                    print(e)
+
+            case "10":
                 exit(0)
             
 

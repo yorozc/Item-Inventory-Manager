@@ -22,7 +22,7 @@ class ItemRepository:
 
             item.id = c.lastrowid
 
-        
+    # TODO: use LIKE instead of id
     def del_from_db(self, id: int):
         query = f"""
                 DELETE FROM {self.profile} WHERE id = ?;
@@ -34,7 +34,8 @@ class ItemRepository:
             if cursor.rowcount == 0:
                 raise Exception(f"Item with id {id} does not exist.")
 
-    def edit_item(self, column, value, id):
+    # TODO: use like instead of id
+    def edit_item(self, column: str, value: str, id: int):
 
         if column not in self._columns:
             raise Exception(f"Invalid property: {column}. Allowed: {', '.join(self._columns)}")
@@ -49,6 +50,7 @@ class ItemRepository:
             c = conn.cursor()
             c.execute(query, (value, id))
 
+    # allow for fuzzy matching using LIKE
     def get_item(self, id: int):
         query = f"""
                 SELECT * FROM {self.profile} WHERE id = ?;
@@ -81,13 +83,13 @@ class ItemRepository:
         return self._profile
 
     @profile.setter
-    def profile(self, profile):
+    def profile(self, profile: str):
         if profile not in self._profiles:
             raise Exception
         
         self._profile = profile
 
-    def create_profile(self, profile):
+    def create_profile(self, profile: str):
         with sqlite3.connect(self._db) as conn:
             c = conn.cursor() 
 
@@ -109,7 +111,7 @@ class ItemRepository:
         
             self._profiles = [row[0] for row in c.fetchall()]
 
-    def switch_profile(self, profile_name):
+    def switch_profile(self, profile_name: str):
         self._profiles = self.show_all_profiles()
 
         if profile_name not in self._profiles:
@@ -118,9 +120,25 @@ class ItemRepository:
         self.profile = profile_name
         print(f"Switched to profile: {self.profile}")
 
-    def delete_profile(self, profile_name):
-        pass
+    def delete_profile(self, profile_name: str):
+        query = f"""
+                DROP TABLE {profile_name}
+                """
+        
+        # check protected tables
+        if profile_name.startswith("sqlite_") or profile_name == "inventory":
+            raise ValueError(f"Cannot delete table: {profile_name}")
 
+        # check if table dropped is current table and switch to default if true
+        if profile_name == self.profile:
+            self.profile = "inventory"
+
+        with sqlite3.connect(self._db) as conn:
+            c = conn.cursor()
+            c.execute(query)
+
+        self._profiles = self.show_all_profiles()
+        
     def show_all_profiles(self):
         with sqlite3.connect(self._db) as conn:
             c = conn.cursor() 
