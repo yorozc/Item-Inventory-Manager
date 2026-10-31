@@ -26,6 +26,8 @@ def create_table():
     );
     """)
 
+    c.execute("INSERT OR IGNORE INTO profiles (name) VALUES ('default');")
+    
     # create table for logging 
 
     conn.commit()

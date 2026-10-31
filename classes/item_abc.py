@@ -3,8 +3,9 @@ from decimal import Decimal, ROUND_HALF_UP
 
 class Item(ABC):
 
-    def __init__(self, name: str, category: str, cost_price: float, retail_price: float, quantity: int, description: str | None = None):
+    def __init__(self, name: str, profile: str, category: str, cost_price: float, retail_price: float, quantity: int, description: str | None = None):
         self._id = None
+        self.profile = profile
         self.name = name
         self.category = category
         self.cost_price = cost_price
@@ -19,6 +20,14 @@ class Item(ABC):
     @id.setter 
     def id(self, _id):
         self._id = _id
+
+    @property
+    def profile(self):
+        return self._profile
+
+    @profile.setter 
+    def profile(self, profile):
+        self._profile = profile
 
     # name validation
     @property

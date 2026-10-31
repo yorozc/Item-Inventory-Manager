@@ -6,8 +6,6 @@ from helper.print_items import print_items
 
 console = Console()
 db_repo = DBRepository()
-
-profile = db_repo.profile
 spacer = "-" * 20
 TEXT_COLOR = "#fdfcdc"
 HEADER_COLOR = "#f07167"
@@ -76,12 +74,12 @@ def run_tui():
                     retail_price = input("Retail cost of item: ")
                     quantity = input("Quantity: ")
                     description = input("Description (optional): ")
-                    confirmation = input(f"Is the information entered correctly [{name}, {category}, {cost_price}, {retail_price}, {quantity}, {description}]: (y/n)")
+                    confirmation = input(f"Is the information entered correctly [{name}, {category}, {cost_price}, {retail_price}, {quantity}, {description}] (y/n): ")
                     
                     if confirmation.lower() == "y" or confirmation.lower() == "yes":
                         try:
-                            new_item = InventoryItem(name, category, cost_price, retail_price, quantity, description)
-                            item_repo.add_item(new_item)
+                            new_item = InventoryItem(name, db_repo.profile, category, cost_price, retail_price, quantity, description)
+                            db_repo.add_item(new_item)
                             print(spacer)
                             console.print("[green bold]Item added!")
                             print(spacer)

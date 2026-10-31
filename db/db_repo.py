@@ -7,25 +7,26 @@ class DBRepository:
         create_table() # creates inventory table if it doesn't exist
         self._db = "inventory.db" 
         self._columns = ["name", "category", "cost_price", "retail_price", "quantity", "description"]
+        self.profile = "default" # default: inventory
         self._profiles = self.show_all_profiles()
-        self.profile = "inventory" # default: inventory
-
+        
     # ITEM RELATED FUNCTIONS
 
     def add_item(self, item: InventoryItem) -> None:
         query = f"""
-                INSERT INTO {self.profile} (name, category, cost_price, retail_price, quantity, description) VALUES (?, ?, ?, ?, ?, ?)
+                INSERT INTO inventory (name, profile, category, cost_price, retail_price, quantity, description) VALUES (?, ?, ?, ?, ?, ?, ?)
                 """
+        item.profile = self.profile
         with sqlite3.connect(self._db) as conn:
             c = conn.cursor()
-            c.execute(query, (item.name, item.category, item.cost_price, item.retail_price, item.quantity, item.description)) 
+            c.execute(query, (item.name, item.profile, item.category, item.cost_price, item.retail_price, item.quantity, item.description)) 
 
             item.id = c.lastrowid
 
     # TODO: use LIKE instead of id
     def del_from_db(self, id: int):
         query = f"""
-                DELETE FROM {self.profile} WHERE id = ?;
+                DELETE FROM inventory WHERE id = ?;
                 """
         
         with sqlite3.connect(self._db) as conn:
@@ -41,7 +42,7 @@ class DBRepository:
             raise Exception(f"Invalid property: {column}. Allowed: {', '.join(self._columns)}")
         
         query = f"""
-                UPDATE {self.profile}
+                UPDATE inventory
                 SET {column} = ?
                 WHERE id = ?;
                 """
@@ -53,7 +54,7 @@ class DBRepository:
     # TODO:  use LIKE instead of id
     def get_item(self, id: int):
         query = f"""
-                SELECT * FROM {self.profile} WHERE id = ?;
+                SELECT * FROM inventory WHERE id = ?;
                 """
         with sqlite3.connect(self._db) as conn:
             c = conn.cursor()
@@ -66,7 +67,7 @@ class DBRepository:
 
     def get_all_items(self) -> list:
         query = f"""
-                SELECT * FROM {self.profile};
+                SELECT * FROM inventory;
                 """
         with sqlite3.connect(self._db) as conn:
             c = conn.cursor()
@@ -83,24 +84,20 @@ class DBRepository:
     # TODO: add more error checking
     @profile.setter
     def profile(self, profile: str):
-        if profile not in self._profiles:
-            raise Exception
         
         self._profile = profile
 
     def create_profile(self, profile: str):
+        query = """
+            INSERT INTO profiles (name) VALUES (?);
+        """
         with sqlite3.connect(self._db) as conn:
             c = conn.cursor() 
 
             # create profile and switch 
+            c.execute(query, (profile))
 
-            c.execute(f""" 
-                INSERT INTO profiles (name)
-            """)
-
-            c.execute("SELECT name FROM sqlite_master WHERE type='table';")
-        
-            self._profiles = [row[0] for row in c.fetchall()]
+        self.profile = profile
 
     def switch_profile(self, profile_name: str):
         self._profiles = self.show_all_profiles()
@@ -113,7 +110,7 @@ class DBRepository:
 
     def delete_profile(self, profile_name: str):
         query = f"""
-                DROP TABLE {profile_name}
+                DELETE FROM profiles WHERE name = ?
                 """
         
         # check protected tables
@@ -126,14 +123,14 @@ class DBRepository:
 
         with sqlite3.connect(self._db) as conn:
             c = conn.cursor()
-            c.execute(query)
+            c.execute(query, (profile_name))
 
         self._profiles = self.show_all_profiles()
         
     def show_all_profiles(self):
         with sqlite3.connect(self._db) as conn:
             c = conn.cursor() 
-            c.execute("SELECT name FROM sqlite_master WHERE type='table';")
-            tables = [row[0] for row in c.fetchall()]
+            c.execute("SELECT name FROM profiles;")
+            tables = c.fetchall()
         
         return tables
