@@ -1,11 +1,13 @@
 from db.item_repo import ItemRepository
+from db.profile_repo import ProfileRepository
 from classes.inventory_item import InventoryItem
 from rich.console import Console
 from helper.print_items import print_items
 
 console = Console()
 item_repo = ItemRepository()
-profile = item_repo.profile
+profile_repo = ProfileRepository()
+profile = profile_repo.profile
 spacer = "-" * 20
 TEXT_COLOR = "#fdfcdc"
 HEADER_COLOR = "#f07167"
@@ -16,7 +18,7 @@ console.print(spacer)
 def run_tui():
     while True:
         console.print(f"[{HEADER_COLOR} bold]Select an operation: ")
-        print(f"Currently in profile: {item_repo.profile}")
+        print(f"Currently in profile: {profile_repo.profile}")
 
         console.print(f"[{TEXT_COLOR}]1. Display all items")
         console.print(spacer)
@@ -116,32 +118,31 @@ def run_tui():
                 except Exception as e:
                     print(e)
 
-            case "6":
+            case "6": # create profile
                 try:
                     new_profile = input("Enter new profile name: ")
-                    item_repo.create_profile(new_profile)
-                    item_repo.switch_profile(new_profile)
+                    profile_repo.create_profile(new_profile)
+                    profile_repo.switch_profile(new_profile)
                     
                 except Exception as e:
                     print(e)
 
                 print(f"New profile created: {new_profile}")
 
-
-            case "7":
+            case "7": # switch profile
                 try:
                     profile = input("Input Profile: ")
-                    item_repo.switch_profile(profile)
+                    profile_repo.switch_profile(profile)
                 except Exception as e:
                     print(e)
 
-            case "8":
-                print(item_repo.show_all_profiles())
+            case "8": # print profiles
+                print(profile_repo.show_all_profiles())
 
-            case "9":
+            case "9": # delete profile
                 try:
                     profile_name = input("Enter profile name: ")
-                    item_repo.delete_profile(profile_name)
+                    profile_repo.delete_profile(profile_name)
                     print(f"Profile {profile_name} deleted.")
                 except Exception as e:
                     print(e)
